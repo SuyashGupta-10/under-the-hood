@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <p align="center">
   <img src="frontend/logo.png" alt="Under the Hood Logo" width="120" />
 </p>
