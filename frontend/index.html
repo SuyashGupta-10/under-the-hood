@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Under the Hood — Datathon Dashboard</title>
+  <meta name="description"
+    content="An AI-powered data analysis dashboard presenting the results of the Product Rescue Mission datathon using Amazon Product Reviews sentiment analysis, aspect mining, and emotion detection." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <canvas id="particles-bg"></canvas>
+  <!-- ════════════════════════════════════════
+     SIDEBAR NAV
+════════════════════════════════════════ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon"><img src="logo.png" alt="Logo"
+          style="width:100%;height:100%;object-fit:cover;border-radius:12px;"></div>
+      <div class="logo-text">
+        <span class="logo-title">Under the Hood</span>
+        <span class="logo-sub" data-i18n="datathon_year">Datathon 2026</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="#hero" class="nav-item active" data-section="hero">
+        <span class="nav-icon">🏠</span><span data-i18n="nav_overview">Overview</span>
+      </a>
+      <a href="#day1" class="nav-item" data-section="day1">
+        <span class="nav-icon">🔬</span><span data-i18n="nav_diag">Diagnostic</span>
+      </a>
+      <a href="#day2" class="nav-item" data-section="day2">
+        <span class="nav-icon">🧠</span><span data-i18n="nav_root">Root Cause</span>
+      </a>
+      <a href="#trust" class="nav-item" data-section="trust">
+        <span class="nav-icon">🔓</span><span data-i18n="nav_trust">Trust Analysis</span>
+      </a>
+      <a href="#day3" class="nav-item" data-section="day3">
+        <span class="nav-icon">🚀</span><span data-i18n="nav_plan">Rescue Plan</span>
+      </a>
+      <a href="#conclusion" class="nav-item" data-section="conclusion">
+        <span class="nav-icon">🏆</span><span data-i18n="nav_conc">Conclusion</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer" style="display:flex; justify-content:space-between; align-items:center;">
+      <div class="team-badge">
+        <span class="badge-flag"><img src="https://flagcdn.com/20x15/in.png" alt="IN" style="vertical-align:middle"> <img src="https://flagcdn.com/20x15/fr.png" alt="FR" style="vertical-align:middle"></span>
+        <span data-i18n="indo_french">IIITB-Aivancity Collaboration</span>
+      </div>
+      <button id="themeToggle" class="theme-btn" aria-label="Toggle Theme">
+        <span class="icon-sun">☀️</span>
+        <span class="icon-moon" style="display:none;">🌙</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ════════════════════════════════════════
+     MAIN CONTENT
+════════════════════════════════════════ -->
+  <main class="main" id="main">
+
+    <!-- HAMBURGER -->
+    <button class="hamburger" id="hamburger" aria-label="Toggle sidebar">
+      <span></span><span></span><span></span>
+    </button>
+
+    <!-- LANGUAGE SELECTOR -->
+    <div style="position: absolute; top: 32px; right: 56px; z-index: 100;">
+      <select id="langToggle"
+        style="background: var(--glass2); border: 1px solid var(--border); color: var(--text); padding: 8px 16px; border-radius: var(--r-sm); font-size: 0.9rem; font-weight: 500; cursor: pointer; outline: none; backdrop-filter: blur(10px);">
+        <option value="en" style="background: var(--bg2); color: var(--text);">English (EN)</option>
+        <option value="fr" style="background: var(--bg2); color: var(--text);">Français (FR)</option>
+      </select>
+    </div>
+
+    <!-- ─── HERO ─────────────────────────────── -->
+    <section class="section hero-section" id="hero">
+      <div class="hero-bg-orb orb1"></div>
+      <div class="hero-bg-orb orb2"></div>
+      <div class="hero-bg-orb orb3"></div>
+
+      <div class="hero-content">
+        <div class="hero-badge animate-in">
+          <span class="pulse-dot"></span>
+          <span data-i18n="hero_badge">Samsung Smartwatch Reviews</span>
+        </div>
+        <h1 class="hero-title animate-in delay-1">
+          <span class="gradient-text">Under</span><br />the Hood
+        </h1>
+        <div class="marquee-container animate-in delay-2">
+          <p class="hero-subtitle marquee-content" data-i18n="hero_sub">
+            Revealing the hidden dissatisfaction in smartwatch reviews
+          </p>
+        </div>
+
+        <!-- KPI ROW -->
+        <div class="kpi-row animate-in delay-3">
+          <div class="kpi-card">
+            <div class="kpi-icon">📦</div>
+            <div class="kpi-value counter" id="kpi-reviews" data-target="24863">0</div>
+            <div class="kpi-label" data-i18n="kpi_reviews">Reviews Analysed</div>
+          </div>
+          <div class="kpi-card highlight">
+            <div class="kpi-icon">⚠️</div>
+            <div class="kpi-value counter" id="kpi-killers" data-target="31">0</div>
+            <div class="kpi-label" data-i18n="kpi_killers">Silent Killers Found</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon">🎯</div>
+            <div class="kpi-value counter" id="kpi-aspects" data-target="5">0</div>
+            <div class="kpi-label" data-i18n="kpi_aspects">Aspects Identified</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon">📉</div>
+            <div class="kpi-value counter" data-target="18" data-suffix="%">0%</div>
+            <div class="kpi-label" data-i18n="kpi_sentiment">Sentiment Decline</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon">🔧</div>
+            <div class="kpi-value counter" data-target="3">0</div>
+            <div class="kpi-label" data-i18n="kpi_fixes">Top Fixes Proposed</div>
+          </div>
+        </div>
+
+        <div class="hero-tagline animate-in delay-4">
+          <span class="tag" data-i18n="tag_samsung">Samsung Smartwatch Category</span>
+          <span class="tag" data-i18n="tag_dataset">McAuley et al. Dataset</span>
+        </div>
+      </div>
+
+      <!-- scroll indicator -->
+      <div class="scroll-hint">
+        <div class="scroll-mouse">
+          <div class="scroll-wheel"></div>
+        </div>
+        <span data-i18n="scroll_explore">Scroll to explore</span>
+      </div>
+    </section>
+
+    <!-- ─── DAY 1: DIAGNOSTIC ─────────────────── -->
+    <section class="section" id="day1">
+      <div class="section-header">
+        <h2 class="section-title" data-i18n="d1_title">The Diagnostic & The "Star-Gap"</h2>
+        <p class="section-desc" data-i18n="d1_desc">Management relies on stars — we relied on truth. Beneath the calm
+          4-star surface lies a growing tide of hidden dissatisfaction.</p>
+      </div>
+
+      <div class="grid-3">
+        <!-- Sentiment vs Stars -->
+        <div class="chart-card col-span-2">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title" data-i18n="d1_c1_title">Top 10 Complaint Keywords</h3>
+              <p class="card-subtitle" data-i18n="d1_c1_sub">Most frequently mentioned pain points across 2,998 reviews
+              </p>
+            </div>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="starGapChart"></canvas>
+          </div>
+          <div class="insight-bar">
+            <span class="insight-icon">💡</span>
+            <span data-i18n="d1_insight1"><strong>Battery life</strong> (349) and <strong>Samsung Gear</strong> (344)
+              dominate complaints — together accounting for 23% of all review mentions.</span>
+          </div>
+        </div>
+
+        <!-- Silent Killers donut -->
+        <div class="chart-card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title" data-i18n="d1_c2_title">Review Breakdown</h3>
+              <p class="card-subtitle" data-i18n="d1_c2_sub">Honest vs. Misleading positives</p>
+            </div>
+          </div>
+          <div class="chart-wrapper chart-sm">
+            <canvas id="silentKillerChart"></canvas>
+          </div>
+          <div class="donut-legend" id="donut-legend">
+            <div class="dl-item"><span class="dl-dot" style="background:#22d3ee"></span><span
+                data-i18n="dl_pos">Genuinely Positive</span>
+              <strong id="dl-pos-pct">—</strong>
+            </div>
+            <div class="dl-item"><span class="dl-dot" style="background:#f97316"></span><span data-i18n="dl_sil">Silent
+                Killers</span>
+              <strong id="dl-sil-pct">—</strong>
+            </div>
+            <div class="dl-item"><span class="dl-dot" style="background:#6366f1"></span><span
+                data-i18n="dl_neg">Genuinely Negative</span>
+              <strong id="dl-neg-pct">—</strong>
+            </div>
+          </div>
+          <div class="stat-callout danger">
+            <span>🚨</span> <span id="donut-alert" data-i18n="d1_alert">— of 4-5★ reviews carry <strong>negative
+                sentiment</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sentiment Distribution -->
+      <div class="grid-3">
+        <div class="chart-card col-span-2">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title" data-i18n="d1_c3_title">BERTopic Cluster Distribution</h3>
+              <p class="card-subtitle" data-i18n="d1_c3_sub">6 topics identified via BERTopic modelling across 2,998
+                reviews</p>
+            </div>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="sentimentTrendChart"></canvas>
+          </div>
+        </div>
+
+        <div class="stats-panel">
+          <h3 class="panel-title" data-i18n="key_findings">Key Findings</h3>
+          <div class="stat-item">
+            <div class="stat-label" data-i18n="stat1_label">Star Rating (Avg)</div>
+            <div class="stat-val" id="stat-star-val">— <span class="trend-up" data-i18n="trend_stable">→ Stable</span>
+            </div>
+            <div class="stat-bar">
+              <div class="stat-fill" id="stat-star-fill" style="width:0%;background:#22d3ee"></div>
+            </div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label" data-i18n="stat2_label">True Sentiment Score</div>
+            <div class="stat-val" id="stat-sent-val">— <span class="trend-down" data-i18n="trend_falling">↓
+                Falling</span></div>
+            <div class="stat-bar">
+              <div class="stat-fill" id="stat-sent-fill" style="width:0%;background:#f97316"></div>
+            </div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label" data-i18n="stat3_label">Silent Killers</div>
+            <div class="stat-val" id="stat-killers-val">— <span class="trend-down" data-i18n="trend_rising">↑
+                Rising</span></div>
+            <div class="stat-bar">
+              <div class="stat-fill" id="stat-killers-fill" style="width:0%;background:#ef4444"></div>
+            </div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label" data-i18n="stat4_label">Negative Sentiment</div>
+            <div class="stat-val" id="stat-neg-val">—</div>
+            <div class="stat-bar">
+              <div class="stat-fill" id="stat-neg-fill" style="width:0%;background:#6366f1"></div>
+            </div>
+          </div>
+          <div class="insight-callout" data-i18n="d1_insight2">
+            <strong>Tipping Point:</strong> Sentiment began declining in <strong>Q3 2023</strong>, while star ratings
+            showed no change — masking the crisis from management.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── DAY 2: ROOT CAUSE ─────────────────── -->
+    <section class="section" id="day2">
+      <div class="section-header">
+        <h2 class="section-title" data-i18n="d2_title">Root Cause Analysis</h2>
+        <p class="section-desc" data-i18n="d2_desc">Aspect mining + emotion detection reveal exactly what is broken and
+          how customers feel about it.</p>
+      </div>
+
+      <div class="grid-2">
+        <!-- Emotion Radar -->
+        <div class="chart-card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title" data-i18n="d2_c2_title">Overall Emotion Profile</h3>
+              <p class="card-subtitle" data-i18n="d2_c2_sub">Distribution of detected emotions across all reviews</p>
+            </div>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="emotionRadar"></canvas>
+          </div>
+        </div>
+
+        <!-- Emotion Bar -->
+        <div class="chart-card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title" data-i18n="d2_c3_title">Emotion Intensity by Aspect</h3>
+              <p class="card-subtitle" data-i18n="d2_c3_sub">Where anger and disappointment concentrate</p>
+            </div>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="emotionBarChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- HEATMAP -->
+      <div class="chart-card full-width">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title" data-i18n="d2_c4_title">Feature × Emotion Heatmap</h3>
+            <p class="card-subtitle" data-i18n="d2_c4_sub">Linking product features to emotional responses</p>
+          </div>
+          <div class="heatmap-legend">
+            <span class="hm-low" data-i18n="hm_low">Low</span>
+            <div class="hm-bar"></div>
+            <span class="hm-high" data-i18n="hm_high">High</span>
+          </div>
+        </div>
+        <div class="heatmap-container" id="heatmap"></div>
+        <div class="insight-bar">
+          <span class="insight-icon">💡</span>
+          <span data-i18n="d2_insight"><strong>Battery × Anger</strong> is the most intense negative pairing.
+            <strong>Design × Joy</strong> is the only bright spot — customers love the look but don't like the
+            performance.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── TRUST & BETRAYAL ANALYSIS ─────────── -->
+    <section class="section" id="trust">
+      <div class="section-header">
+        <h2 class="section-title" data-i18n="trust_title">Trust & Betrayal Analysis</h2>
+        <p class="section-desc" data-i18n="trust_desc">Quantifying the gap between star ratings and true customer sentiment — where loyalty
+          breaks down.</p>
+      </div>
+
+      <div class="grid-2">
+        <!-- Customer Personas -->
+        <div class="chart-card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title" data-i18n="trust_c1_title">Customer Personas: The Real Audience</h3>
+              <p class="card-subtitle" data-i18n="trust_c1_sub">Segmenting reviewers by loyalty and sentiment alignment</p>
+            </div>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="personasChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Pain Severity Index -->
+        <div class="chart-card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title" data-i18n="trust_c2_title">Customer Pain Severity Index (0–10)</h3>
+              <p class="card-subtitle" data-i18n="trust_c2_sub">Distribution of pain severity scores across all reviews</p>
+            </div>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="painIndexChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trust Breakdown (full width) -->
+      <div class="chart-card full-width">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title" data-i18n="trust_c3_title">Trust Breakdown: High Stars ≠ Happy Customers</h3>
+            <p class="card-subtitle" data-i18n="trust_c3_sub">Trust breakdown score distribution by star rating — the "Star-Gap" proof</p>
+          </div>
+        </div>
+        <div class="chart-wrapper">
+          <canvas id="trustBreakdownChart"></canvas>
+        </div>
+      </div>
+    </section>
+    <!-- ─── DAY 3: RESCUE PLAN ─────────────────── -->
+    <section class="section" id="day3">
+      <div class="section-header">
+        <h2 class="section-title" data-i18n="d3_title">The Rescue Plan & Business Pitch</h2>
+        <p class="section-desc" data-i18n="d3_desc">Resources are limited. The brand must know what to fix first. Here
+          is the data-driven roadmap back to profitability.</p>
+      </div>
+
+      <!-- Priority Matrix -->
+      <div class="grid-3">
+        <div class="chart-card col-span-2">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title" data-i18n="d3_c1_title">Prioritisation Matrix</h3>
+              <p class="card-subtitle" data-i18n="d3_c1_sub">Frequency of Complaint vs. Emotional Intensity — bubble
+                size = review volume</p>
+            </div>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="priorityMatrix"></canvas>
+          </div>
+          <div class="matrix-quadrants">
+            <span class="mq mq-critical" data-i18n="mq_crit">🔴 Critical — Fix Now</span>
+            <span class="mq mq-quick" data-i18n="mq_quick">🟡 Quick Win — Easy Fix</span>
+            <span class="mq mq-monitor" data-i18n="mq_mon">🟢 Monitor — Low Priority</span>
+          </div>
+
+          <!-- Betrayal Index (inside same card) -->
+          <div style="margin-top:28px;padding-top:24px;border-top:1px solid rgba(255,255,255,0.06)">
+            <div class="card-header" style="margin-bottom:14px">
+              <div>
+                <h3 class="card-title" data-i18n="betrayal_title">Product Trust Decay: Betrayal Index Over Time</h3>
+                <p class="card-subtitle" data-i18n="betrayal_sub">Moving average of betrayal frequency — trust erosion trend since 2007</p>
+              </div>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="betrayalChart"></canvas>
+            </div>
+            <div class="insight-bar">
+              <span class="insight-icon">💡</span>
+              <span>Betrayal frequency <strong>spikes sharply after 2020</strong>, indicating accelerating trust decay despite stable star ratings.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Top 3 Fixes -->
+        <div class="fixes-panel" id="fixes-container">
+          <h3 class="panel-title" data-i18n="d3_fixes_title">🔧 Top 3 Fixes</h3>
+          <!-- Fixes will be injected dynamically by app.js -->
+        </div>
+      </div>
+
+      <!-- Revenue Recovery Projection -->
+      <div class="grid-2">
+        <div class="chart-card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title" data-i18n="d3_c2_title">Projected Customer Retention Recovery</h3>
+              <p class="card-subtitle" data-i18n="d3_c2_sub">Modelled impact of implementing all 3 fixes over 12 months
+              </p>
+            </div>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="recoveryChart"></canvas>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title" data-i18n="d3_c3_title">Review Sentiment Before vs. After Fix</h3>
+              <p class="card-subtitle" data-i18n="d3_c3_sub">Predicted sentiment score improvement per aspect</p>
+            </div>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="beforeAfterChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── CONCLUSION ─────────────────────────── -->
+    <section class="section" id="conclusion">
+      <div class="section-header">
+        <h2 class="section-title" data-i18n="conc_title">Conclusion & Key Takeaways</h2>
+        <p class="section-desc" data-i18n="conc_desc">A 3-day AI investigation that turned data into a clear path back
+          to profitability.</p>
+      </div>
+
+      <div class="conclusion-grid">
+        <div class="conclusion-card cc1">
+          <div class="cc-icon">🔍</div>
+          <h3 data-i18n="cc1_t">The Star-Gap is Real</h3>
+          <p data-i18n="cc1_d">31% of 4-5★ reviews carry negative sentiment. Relying on average star ratings alone is
+            dangerously misleading for product decision-making.</p>
+        </div>
+        <div class="conclusion-card cc2">
+          <div class="cc-icon">🔋</div>
+          <h3 data-i18n="cc2_t">Battery is the Root Cause</h3>
+          <p data-i18n="cc2_d">With 38% mention frequency and anger intensity of 8.7/10, battery performance is the #1
+            driver of customer churn and return rate growth.</p>
+        </div>
+        <div class="conclusion-card cc3">
+          <div class="cc-icon">💡</div>
+          <h3 data-i18n="cc3_t">Design is the Bright Spot</h3>
+          <p data-i18n="cc3_d">Customers love how the product looks (Joy score: 8.2/10). Leveraging this in marketing
+            while fixing underlying issues is a key strategic lever.</p>
+        </div>
+        <div class="conclusion-card cc4">
+          <div class="cc-icon">📈</div>
+          <h3 data-i18n="cc4_t">Recovery is Achievable</h3>
+          <p data-i18n="cc4_d">Implementing the Top 3 Fixes — Battery, App Sync, Audio — is projected to recover
+            customer sentiment by 34% within 12 months.</p>
+        </div>
+      </div>
+
+      <!-- Methodology -->
+      <div class="methodology-section">
+        <h3 class="meth-title" data-i18n="meth_title">🛠️ Methodology Stack</h3>
+        <div class="meth-pills">
+          <div class="meth-pill"><span class="meth-icon">🐍</span>Python 3.11</div>
+          <div class="meth-pill"><span class="meth-icon">🤗</span>HuggingFace Transformers</div>
+          <div class="meth-pill"><span class="meth-icon">📊</span>BERTopic</div>
+          <div class="meth-pill"><span class="meth-icon">🧮</span>Scikit-Learn</div>
+          <div class="meth-pill"><span class="meth-icon">💬</span>NLTK / SpaCy</div>
+          <div class="meth-pill"><span class="meth-icon">📉</span>Plotly / Chart.js</div>
+          <div class="meth-pill"><span class="meth-icon">🗃️</span>Pandas / NumPy</div>
+          <div class="meth-pill"><span class="meth-icon">🤖</span>VADER Sentiment</div>
+        </div>
+      </div>
+
+      <div class="final-cta">
+        <div class="cta-content">
+          <span class="cta-flags"><img src="https://flagcdn.com/48x36/in.png" alt="India" style="vertical-align:middle"> <img src="https://flagcdn.com/48x36/fr.png" alt="France" style="vertical-align:middle"></span>
+          <h3 data-i18n="cta_collab">IIITB-Aivancity Collaboration · Datathon 2026</h3>
+          <p data-i18n="built_by">Built by Tanishqa and Suyash.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+
+</html>
