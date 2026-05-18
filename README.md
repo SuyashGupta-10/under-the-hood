@@ -318,13 +318,11 @@ Then visit **http://localhost:8000** in your browser.
 | **Suyash** | IIIT Bangalore 🇮🇳 |
 | **Tanishqa** | Aivancity, Paris 🇫🇷 |
 
-An **IIITB–Aivancity collaboration** as part of the Indo-French Datathon 2026.
+An **IIITB–Aivancity collaboration** as part of the Datathon 2026.
 
 ---
 
 <p align="center">
-  <em>Built with 💙 by Under the Hood — Datathon 2026</em>
+  <em>Built with 💙 — Datathon 2026</em>
 </p>
 =======
-# under-the-hood
->>>>>>> e3dfec870720b1aa8aecfaf1abc688dbd8525d97
